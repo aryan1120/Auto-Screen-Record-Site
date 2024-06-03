@@ -7,20 +7,55 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+   
     <div class="container">
+       
+          
         <h1>Screen Recorder</h1>
-        <button id="start">
-            Start Recording
+        
+       <div class="button-container">
+        <button class="btn" role="button" id="start">
+            <svg height="24" width="24" fill="#FFFFFF" viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" class="sparkle">
+                <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
+            </svg>
+        
+            <span class="text">  Start Recording</span>
+          
           </button>
-          <button id="stop" disabled>
-            Stop Recording
+          <button class="btn" role="button" id="stop" disabled>
+            <svg height="24" width="24" fill="#FFFFFF" viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" class="sparkle">
+                <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
+            </svg>
+            <span class="text">  Stop Recording</span>
+          
+
           </button>
-          <button id="download" disabled>
-            download video
+          <button class="btn" role="button" id="download" disabled>
+            <svg height="24" width="24" fill="#FFFFFF" viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" class="sparkle">
+                <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
+            </svg>
+            <span class="text">  Download Recording</span>
+            
+      
           </button>
+       </div>
           <video controls controlslist="nodownload" oncontextmenu="return false" />
     </div>
+    <!-- HTML !-->
+    <a style="display: contents;color: white;" href="https://www.linkedin.com/in/aryan-agney/" target="_blank">
+<button class="button-50" role="button"> Developed By Aryan 
+<br>
+    <img src="https://counter4.optistats.ovh/private/freecounterstat.php?c=tedp2tkr52ugd1cau6m4t5w7z7htmjq5" border="0" title="free hit counter" alt="free hit counter">
 
+</button></a>
+
+    <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+    <script>
+      function addDarkmodeWidget() {
+        new Darkmode().showWidget();
+      }
+    //   window.addEventListener('load', addDarkmodeWidget);
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

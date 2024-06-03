@@ -3,16 +3,14 @@
     margin-top: 50px;
 }
 
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-}
-
+ 
 body {
     text-align: center;
   }
-  
+  .button-container{
+    display: flex;
+    justify-content: center;
+}
   button {
     display: inline-block;
     margin: 1em 1em;
@@ -22,7 +20,124 @@ body {
   
   video {
     border: 1px solid lightgray;
-    width: 100%;
+    width: 50%;
     background-color: #eee;
   }
+  .btn {
+    border: none;
+    width: 6em;
+    height: 2em;
+    border-radius: 3em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    background: linear-gradient(0deg,#A47CF3,#683FEA);
+padding: 30px;
+    cursor: pointer;
+    transition: all 450ms ease-in-out;
+  }
+  .btn:disabled{
+    background: rgb(28, 28, 28);
+    cursor: not-allowed;
+    color: white;
+
+  }
+  .btn:disabled:hover{
+    background: gray;
+    color: white;
+
+    cursor: not-allowed;
+  }
+  .btn:disabled .text {
+    font-weight: 600;
+    color: white;
+    
+    font-size: medium;
+  }
+  .darkmode-toggle{
+    z-index: 99999999999999999999;
+  }
+  .sparkle {
+    fill: #AAAAAA;
+    transition: all 800ms ease;
+  }
   
+  .text {
+    font-weight: 600;
+    color: white;
+
+    font-size: medium;
+  }
+  
+  .btn:hover {
+    background: linear-gradient(0deg,#A47CF3,#683FEA);
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+    inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+    0px 0px 180px 0px #9917FF;
+    transform: translateY(-2px);
+  }
+  
+  .btn:hover .text {
+    color: white;
+  }
+  
+  .btn:hover .sparkle {
+    fill: white;
+    transform: scale(1.2);
+  }   
+
+
+  
+/* CSS */
+.button-50 {
+    appearance: button;
+    background-color: #000;
+    background-image: none;
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-shadow: #fff 4px 4px 0 0,#000 4px 4px 0 1px;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: ITCAvantGardeStd-Bk,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 0 5px 10px 0;
+    overflow: visible;
+    padding: 12px 40px;
+    text-align: center;
+    text-transform: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  
+  .button-50:focus {
+    text-decoration: none;
+  }
+  
+  .button-50:hover {
+    text-decoration: none;
+  }
+  
+  .button-50:active {
+    box-shadow: rgba(0, 0, 0, .125) 0 3px 5px inset;
+    outline: 0;
+  }
+  
+  .button-50:not([disabled]):active {
+    box-shadow: #fff 2px 2px 0 0, #000 2px 2px 0 1px;
+    transform: translate(2px, 2px);
+  }
+  
+  @media (min-width: 768px) {
+    .button-50 {
+      padding: 12px 50px;
+    }
+  }
