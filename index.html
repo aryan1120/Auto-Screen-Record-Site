@@ -57,7 +57,6 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
 
-    <!-- Top Navigation / Header -->
     <header class="border-b border-slate-800/80 bg-slate-900/40 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -80,7 +79,6 @@
         </div>
     </header>
 
-    <!-- Main Workspace Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
@@ -161,16 +159,16 @@
                                     </div>
                                     <div>
                                         <p class="text-xs font-semibold text-slate-200">Include Microphone</p>
-                                        <p class="text-[10px] text-slate-400">Record external voiceovers</p>
+                                        <p class="text-[10px] text-slate-400">Record external voice/mic inputs</p>
                                     </div>
                                 </div>
-                                <input type="checkbox" id="toggleMicrophone" checked class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-700 bg-slate-800">
+                                <input type="checkbox" id="toggleMicrophone" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-700 bg-slate-800">
                             </label>
 
                             <!-- System Audio Notification -->
                             <div class="p-3 bg-slate-950/40 border border-dashed border-slate-800/80 rounded-xl text-[11px] text-slate-400 leading-relaxed flex items-start gap-2">
                                 <svg class="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <span>Note: System Audio sharing options are presented in the system popup when initiating screen capture.</span>
+                                <span>Note: System Audio sharing options are presented in the standard system popup when screen capture begins.</span>
                             </div>
                         </div>
                     </div>
@@ -179,7 +177,7 @@
                 <!-- Live Mic Meter/Visualizer (only shown during active audio/mic usage) -->
                 <div id="audioVisualizerContainer" class="hidden bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-xl shadow-lg space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wide">Audio Input Activity</span>
+                        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wide font-mono" id="visualizerLabel">Audio Capture Activity</span>
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse">Monitoring</span>
                     </div>
                     <!-- Audio Waveform Canvas -->
@@ -218,16 +216,16 @@
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                             </div>
                             <div class="space-y-1">
-                                <h3 class="text-slate-200 font-semibold text-sm">No Screen Input Active</h3>
-                                <p class="text-xs text-slate-400">Your live capture layout and stream options will render inside this interactive deck</p>
+                                <h3 class="text-slate-200 font-semibold text-sm">No Active Streams</h3>
+                                <p class="text-xs text-slate-400">Select parameters and click Start to begin capture setup</p>
                             </div>
                         </div>
 
                         <!-- Video Player (used for playing back finished tracks) -->
                         <video id="finishedPlayback" controls class="hidden w-full max-h-[480px] rounded-xl shadow-lg border border-slate-800/80 bg-black" controlslist="nodownload" oncontextmenu="return false"></video>
 
-                        <!-- Invisible helper canvas used for Screen + Camera Composition -->
-                        <canvas id="compositorCanvas" class="hidden"></canvas>
+                        <!-- Canvas used for Screen + Camera Composition -->
+                        <canvas id="compositorCanvas" class="hidden w-full max-h-[480px] rounded-xl border border-indigo-500/30 shadow-lg shadow-indigo-500/5 bg-slate-950"></canvas>
                         
                         <!-- Invisible helper video tag to load/stream camera background processes -->
                         <video id="hiddenCamVideo" autoplay playsinline muted class="hidden"></video>
@@ -343,11 +341,11 @@
                                 <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Capture Summary</label>
                                 <div class="grid grid-cols-2 gap-3">
                                     <div class="p-2 bg-slate-900 rounded-lg border border-slate-800">
-                                        <p class="text-[10px] text-slate-400">Total Duration</p>
+                                        <p class="text-[10px] text-slate-400 font-medium">Total Duration</p>
                                         <p id="statDuration" class="text-sm font-bold text-slate-200 timer-font mt-0.5">00:00</p>
                                     </div>
                                     <div class="p-2 bg-slate-900 rounded-lg border border-slate-800">
-                                        <p class="text-[10px] text-slate-400">Estimated Size</p>
+                                        <p class="text-[10px] text-slate-400 font-medium">Estimated Size</p>
                                         <p id="statSize" class="text-sm font-bold text-slate-200 timer-font mt-0.5">-- KB</p>
                                     </div>
                                 </div>
@@ -371,7 +369,7 @@
     <!-- Toast Message Area -->
     <div id="toastContainer" class="fixed bottom-5 right-5 space-y-2.5 z-50 pointer-events-none max-w-sm w-full"></div>
 
-    <!-- Developer Signature and Stats Counter (Maintained from your base design) -->
+    <!-- Developer Signature and Stats Counter -->
     <footer class="border-t border-slate-800/80 bg-slate-900/20 backdrop-blur-md py-6 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-xs text-slate-500">&copy; 2026 StudioCapture, All Rights Reserved. Client-side encoding protected.</p>
@@ -390,12 +388,13 @@
         // Core state tracker variable definitions
         let streamMode = 'screen'; // screen, cam, combo, audio
         let exportFormat = 'mp4'; // mp4, webm, audio_only
-        let audioContext, analyser, animationId, dataArray, mediaRecorder;
+        let audioCtx, analyser, animationId, dataArray, mediaRecorder;
         let recordedChunks = [];
         let timerInterval;
         let captureStartTime = 0;
         let activeStreams = []; // Track actual hardware media streams
         let isPaused = false;
+        let isCompositing = false;
         let dynamicCanvasStream = null;
         let canvasDrawingLoopId = null;
 
@@ -447,7 +446,6 @@
             }
         });
 
-        // Capture parameter updates UI controls
         function setCaptureMode(mode) {
             streamMode = mode;
             
@@ -529,18 +527,24 @@
             document.getElementById('fpsValueText').innerText = labels[e.target.value];
         });
 
-        // Live Audio analysis & setup
-        function setupAudioAnalysis(stream) {
+        function setupAudioAnalysis(audioTrack) {
             try {
-                const audioTracks = stream.getAudioTracks();
-                if (audioTracks.length === 0) return;
+                if (!audioTrack) return;
 
                 document.getElementById('audioVisualizerContainer').classList.remove('hidden');
-
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
                 
-                const source = audioContext.createMediaStreamSource(stream);
+                // Set visualizer label according to source
+                const label = document.getElementById('visualizerLabel');
+                if (streamMode === 'screen' && !document.getElementById('toggleMicrophone').checked) {
+                    label.innerText = "System Audio Level";
+                } else {
+                    label.innerText = "Microphone Level";
+                }
+
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                
+                const source = audioCtx.createMediaStreamSource(new MediaStream([audioTrack]));
                 source.connect(analyser);
                 
                 analyser.fftSize = 256;
@@ -589,11 +593,13 @@
         // Clean analysis resources
         function teardownAudioAnalysis() {
             if (animationId) cancelAnimationFrame(animationId);
-            if (audioContext) audioContext.close();
+            if (audioCtx) {
+                audioCtx.close();
+                audioCtx = null;
+            }
             document.getElementById('audioVisualizerContainer').classList.add('hidden');
         }
 
-        // Video Compositing Loop (Screen + Circular Overlay Camera)
         function startCanvasCompositing(screenVideo, camVideo, width, height) {
             const canvas = document.getElementById('compositorCanvas');
             const ctx = canvas.getContext('2d');
@@ -603,54 +609,60 @@
             canvas.classList.remove('hidden');
             document.getElementById('previewPlaceholder').classList.add('hidden');
 
+            isCompositing = true;
+
             function compositeFrame() {
-                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                    // 1. Draw active background Screen
+                if (!isCompositing) return;
+
+                // 1. Draw active background Screen
+                if (screenVideo.readyState >= 2) {
                     ctx.drawImage(screenVideo, 0, 0, width, height);
-
-                    // 2. Composite Foreground Camera (Circular bottom-right widget)
-                    // Render webcam only if active video tracks are operating
-                    if(camVideo.srcObject && camVideo.srcObject.getVideoTracks().length > 0) {
-                        const widgetWidth = width * 0.18; // Circular webcam occupies 18% width
-                        const widgetHeight = widgetWidth;
-                        const edgePadding = 24;
-                        const x = width - widgetWidth - edgePadding;
-                        const y = height - widgetHeight - edgePadding;
-
-                        ctx.save();
-                        ctx.beginPath();
-                        const radius = widgetWidth / 2;
-                        ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
-                        ctx.clip();
-
-                        // Cover scale crop math
-                        ctx.drawImage(camVideo, x, y, widgetWidth, widgetHeight);
-                        ctx.restore();
-
-                        // Add sleek white/indigo stroke ring around web camera
-                        ctx.strokeStyle = '#6366f1';
-                        ctx.lineWidth = 4;
-                        ctx.beginPath();
-                        ctx.arc(x + radius, y + radius, radius - 2, 0, Math.PI * 2);
-                        ctx.stroke();
-                    }
-
-                    canvasDrawingLoopId = requestAnimationFrame(compositeFrame);
+                } else {
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillRect(0, 0, width, height);
                 }
+
+                // 2. Composite Foreground Camera (Circular bottom-right widget)
+                if (camVideo.srcObject && camVideo.readyState >= 2) {
+                    const widgetWidth = width * 0.18; // Circular webcam occupies 18% width
+                    const widgetHeight = widgetWidth;
+                    const edgePadding = 24;
+                    const x = width - widgetWidth - edgePadding;
+                    const y = height - widgetHeight - edgePadding;
+
+                    ctx.save();
+                    ctx.beginPath();
+                    const radius = widgetWidth / 2;
+                    ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
+                    ctx.clip();
+
+                    // Standard aspect ratio scale cover math
+                    ctx.drawImage(camVideo, x, y, widgetWidth, widgetHeight);
+                    ctx.restore();
+
+                    // Add sleek white/indigo stroke ring around web camera
+                    ctx.strokeStyle = '#6366f1';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(x + radius, y + radius, radius - 2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                canvasDrawingLoopId = requestAnimationFrame(compositeFrame);
             }
 
             compositeFrame();
             
             // Return stream representation of canvas rendering engine
-            const fpsVal = parseInt(document.getElementById('selectFPS').value);
+            const fpsVal = parseInt(document.getElementById('selectFPS').value) || 30;
             return canvas.captureStream(fpsVal);
         }
 
-        // Start Recording Capture Sequences
         document.getElementById('btnStart').addEventListener('click', async () => {
             recordedChunks = [];
             activeStreams = [];
             isPaused = false;
+            isCompositing = false;
 
             // Gather capture selections
             const resolution = document.getElementById('selectResolution').value;
@@ -672,7 +684,9 @@
                 let compositeRecordingStream = new MediaStream();
                 let mainVideoTrack = null;
                 let screenAudioTrack = null;
-                let microphoneStream = null;
+                let micAudioTrack = null;
+                let cameraVideoStream = null;
+                let screenVideoStream = null;
 
                 // Lock Config sidebars
                 document.getElementById('selectResolution').disabled = true;
@@ -681,97 +695,122 @@
 
                 showNotification("Initializing system components...", "info");
 
-                // Mode: Screen Only OR Screen + Camera Combo OR Audio Only
+                // Mode screen: Screen Only OR Screen + Camera Combo
                 if (streamMode === 'screen' || streamMode === 'combo') {
-                    const screenStream = await navigator.mediaDevices.getDisplayMedia({
-                        video: {
-                            width: { ideal: targetWidth },
-                            height: { ideal: targetHeight },
-                            frameRate: { ideal: fps }
-                        },
-                        audio: true
-                    });
-                    activeStreams.push(screenStream);
+                    try {
+                        screenVideoStream = await navigator.mediaDevices.getDisplayMedia({
+                            video: {
+                                width: { ideal: targetWidth },
+                                height: { ideal: targetHeight },
+                                frameRate: { ideal: fps }
+                            },
+                            audio: {
+                                echoCancellation: true,
+                                noiseSuppression: true
+                            }
+                        });
+                        activeStreams.push(screenVideoStream);
 
-                    const screenVideo = document.getElementById('hiddenScreenVideo');
-                    screenVideo.srcObject = screenStream;
-                    await screenVideo.play();
+                        const screenVideo = document.getElementById('hiddenScreenVideo');
+                        screenVideo.srcObject = screenVideoStream;
+                        await screenVideo.play();
 
-                    mainVideoTrack = screenStream.getVideoTracks()[0];
-                    if (screenStream.getAudioTracks().length > 0) {
-                        screenAudioTrack = screenStream.getAudioTracks()[0];
+                        mainVideoTrack = screenVideoStream.getVideoTracks()[0];
+                        if (screenVideoStream.getAudioTracks().length > 0) {
+                            screenAudioTrack = screenVideoStream.getAudioTracks()[0];
+                        }
+
+                        // Handle "Stop Sharing" native system click cleanly
+                        mainVideoTrack.addEventListener('ended', () => {
+                            stopRecordingSession();
+                        });
+                    } catch (e) {
+                        throw new Error("Screen sharing permission denied.");
                     }
-
-                    // Handle "Stop Sharing" native system click cleanly
-                    mainVideoTrack.addEventListener('ended', () => {
-                        stopRecordingSession();
-                    });
                 }
 
-                // Setup secondary Microphone inputs if required
-                if (includeMic || streamMode === 'audio' || streamMode === 'cam') {
+                // Setup Camera streams / Microphone audio
+                if (streamMode === 'cam' || streamMode === 'combo' || streamMode === 'audio' || includeMic) {
                     try {
-                        microphoneStream = await navigator.mediaDevices.getUserMedia({
-                            audio: true,
-                            video: (streamMode === 'cam' || streamMode === 'combo') ? {
+                        const needsCameraVideo = (streamMode === 'cam' || streamMode === 'combo');
+                        
+                        cameraVideoStream = await navigator.mediaDevices.getUserMedia({
+                            audio: includeMic, // ONLY record user voice if "Include Microphone" is checked
+                            video: needsCameraVideo ? {
                                 width: { ideal: 640 },
                                 height: { ideal: 480 },
                                 frameRate: { ideal: fps }
                             } : false
                         });
-                        activeStreams.push(microphoneStream);
+                        activeStreams.push(cameraVideoStream);
 
-                        if(streamMode === 'cam') {
+                        if (needsCameraVideo) {
                             const camVideo = document.getElementById('hiddenCamVideo');
-                            camVideo.srcObject = microphoneStream;
+                            camVideo.srcObject = cameraVideoStream;
                             await camVideo.play();
-                            mainVideoTrack = microphoneStream.getVideoTracks()[0];
+                            
+                            if (streamMode === 'cam') {
+                                mainVideoTrack = cameraVideoStream.getVideoTracks()[0];
+                            }
+                        }
+
+                        if (includeMic && cameraVideoStream.getAudioTracks().length > 0) {
+                            micAudioTrack = cameraVideoStream.getAudioTracks()[0];
                         }
                     } catch (err) {
-                        showNotification("Microphone or Webcam block/denied. Proceeding with video only tracks.", "error");
+                        showNotification("Camera or Microphone access blocked. Check permissions.", "error");
+                        if (streamMode === 'combo' || streamMode === 'cam') {
+                            throw new Error("Webcam is required for selected camera overlay mode.");
+                        }
                     }
                 }
 
                 // Finalize streaming composition routes
-                if (streamMode === 'combo' && microphoneStream) {
-                    // Set up screen elements
+                if (streamMode === 'combo') {
                     const screenVideo = document.getElementById('hiddenScreenVideo');
                     const camVideo = document.getElementById('hiddenCamVideo');
-                    camVideo.srcObject = microphoneStream;
-                    await camVideo.play();
-
+                    
                     // Active drawing pipeline output
                     dynamicCanvasStream = startCanvasCompositing(screenVideo, camVideo, targetWidth, targetHeight);
                     mainVideoTrack = dynamicCanvasStream.getVideoTracks()[0];
                 }
 
-                // Combine audio sources if screen sound & voice exist
-                let combinedAudioStream = new MediaStream();
-                if (screenAudioTrack) combinedAudioStream.addTrack(screenAudioTrack);
-                
-                if (microphoneStream && microphoneStream.getAudioTracks().length > 0) {
-                    const micTrack = microphoneStream.getAudioTracks()[0];
-                    combinedAudioStream.addTrack(micTrack);
-                    setupAudioAnalysis(microphoneStream);
-                } else if (screenAudioTrack) {
-                    setupAudioAnalysis(new MediaStream([screenAudioTrack]));
+                // Create Node Mixer using Web Audio API to merge tracks cleanly
+                let webAudioDest = null;
+                let audioContextInstance = null;
+
+                if (screenAudioTrack || micAudioTrack) {
+                    audioContextInstance = new (window.AudioContext || window.webkitAudioContext)();
+                    webAudioDest = audioContextInstance.createMediaStreamDestination();
+
+                    if (screenAudioTrack) {
+                        const systemSource = audioContextInstance.createMediaStreamSource(new MediaStream([screenAudioTrack]));
+                        systemSource.connect(webAudioDest);
+                    }
+
+                    if (micAudioTrack) {
+                        const micSource = audioContextInstance.createMediaStreamSource(new MediaStream([micAudioTrack]));
+                        micSource.connect(webAudioDest);
+                        setupAudioAnalysis(micAudioTrack);
+                    } else if (screenAudioTrack) {
+                        setupAudioAnalysis(screenAudioTrack);
+                    }
                 }
 
-                // Build composite recording packages
+                // Build final composite recording package
                 if (streamMode !== 'audio' && mainVideoTrack) {
                     compositeRecordingStream.addTrack(mainVideoTrack);
                 }
                 
-                combinedAudioStream.getAudioTracks().forEach(track => {
-                    compositeRecordingStream.addTrack(track);
-                });
+                if (webAudioDest && webAudioDest.stream.getAudioTracks().length > 0) {
+                    compositeRecordingStream.addTrack(webAudioDest.stream.getAudioTracks()[0]);
+                }
 
                 // Set options with codec fallback profiles
                 let options = { mimeType: 'video/webm; codecs=vp9' };
                 if (streamMode === 'audio') {
                     options = { mimeType: 'audio/webm; codecs=opus' };
                 } else if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
-                    // Set mp4 recording format dynamically if natively supported by host browser
                     options = { mimeType: 'video/mp4;codecs=h264' };
                 } else if (!MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
                     options = { mimeType: 'video/webm' };
@@ -816,7 +855,7 @@
 
             } catch (err) {
                 console.error(err);
-                showNotification("Recording setup failed: Permission denied or resources busy.", "error");
+                showNotification(err.message || "Recording setup failed. Please retry.", "error");
                 
                 // Unlock Config sidebars
                 document.getElementById('selectResolution').disabled = false;
@@ -873,10 +912,10 @@
             }
         }
 
-        // Post Capture Processing logic runs when media recorder halts
         function processFinishedRecording() {
             stopTimerLoop();
             teardownAudioAnalysis();
+            isCompositing = false;
 
             if(canvasDrawingLoopId) {
                 cancelAnimationFrame(canvasDrawingLoopId);
@@ -932,7 +971,6 @@
             showNotification("Processing complete! Ready for local export.", "success");
         }
 
-        // Master Download Processor
         document.getElementById('btnDownload').addEventListener('click', () => {
             if (recordedChunks.length === 0) {
                 showNotification("Cannot process export: Recording workspace contains zero frames.", "error");
@@ -948,7 +986,6 @@
                     finalBlobMimeType = 'video/mp4';
                     fileExt = 'mp4';
                 } else {
-                    // WebM to MP4 container conversion notice
                     finalBlobMimeType = 'video/mp4'; // Change MIME container on flight
                     fileExt = 'mp4';
                     showNotification("Packaging container configuration in Web-Compatible MP4...", "info");
