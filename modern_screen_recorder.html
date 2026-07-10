@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Recorder - Professional Screencast & Capture</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts (Inter & JetBrains Mono for Timer) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), transparent 45%),
+                        radial-gradient(circle at bottom left, rgba(244, 63, 94, 0.05), transparent 40%),
+                        #0b0f19;
+        }
+        .timer-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
+
+    <!-- Top Navigation / Header -->
+    <header class="border-b border-slate-800/80 bg-slate-900/40 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-rose-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">StudioCapture</h1>
+                    <p class="text-xs text-indigo-400 font-medium">Pro Recording Suite</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Live Badge -->
+            <div id="liveStatusBadge" class="hidden items-center space-x-2 bg-rose-500/10 border border-rose-500/20 px-3 py-1 rounded-full">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                <span class="text-xs font-semibold text-rose-400 tracking-wider uppercase">LIVE RECORDING</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Side: Control & Configuration Panel (4 cols) -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 backdrop-blur-xl shadow-xl space-y-6">
+                    <div>
+                        <h2 class="text-md font-bold text-slate-200 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Recording Parameters
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Configure your capture quality before starting</p>
+                    </div>
+
+                    <!-- Config Option: Capture Mode -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Capture Mode</label>
+                        <div class="grid grid-cols-2 gap-2" id="captureModeContainer">
+                            <button id="modeScreen" class="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-white font-medium text-xs transition duration-200 hover:border-indigo-400" onclick="setCaptureMode('screen')">
+                                <svg class="w-5 h-5 mb-1.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                Screen Only
+                            </button>
+                            <button id="modeCam" class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-800/40 text-slate-300 font-medium text-xs transition duration-200 hover:border-slate-700 hover:text-white" onclick="setCaptureMode('cam')">
+                                <svg class="w-5 h-5 mb-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                Camera Only
+                            </button>
+                            <button id="modeCombo" class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-800/40 text-slate-300 font-medium text-xs transition duration-200 hover:border-slate-700 hover:text-white col-span-2" onclick="setCaptureMode('combo')">
+                                <div class="flex items-center gap-1.5 mb-1.5">
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    <span class="text-xs text-slate-400">+</span>
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                </div>
+                                Screen + Camera Overlay
+                            </button>
+                            <button id="modeAudio" class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-800/40 text-slate-300 font-medium text-xs transition duration-200 hover:border-slate-700 hover:text-white col-span-2" onclick="setCaptureMode('audio')">
+                                <svg class="w-5 h-5 mb-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                                Audio Only (Mic & System)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Config Option: Resolution -->
+                    <div class="space-y-2" id="resolutionWrapper">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex justify-between">
+                            <span>Target Quality</span>
+                            <span id="resValueText" class="text-indigo-400 normal-case font-normal">1080p (Full HD)</span>
+                        </label>
+                        <select id="selectResolution" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
+                            <option value="4k">4K Ultra HD (2160p)</option>
+                            <option value="1080p" selected>Full HD (1080p)</option>
+                            <option value="720p">Standard HD (720p)</option>
+                        </select>
+                    </div>
+
+                    <!-- Config Option: Frame Rate -->
+                    <div class="space-y-2" id="fpsWrapper">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex justify-between">
+                            <span>Frame Rate</span>
+                            <span id="fpsValueText" class="text-indigo-400 normal-case font-normal">60 FPS (Ultra-smooth)</span>
+                        </label>
+                        <select id="selectFPS" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
+                            <option value="60" selected>60 FPS — Best for gaming & crisp action</option>
+                            <option value="30">30 FPS — Best for standard presentations</option>
+                            <option value="15">15 FPS — Low-bandwidth saving</option>
+                        </select>
+                    </div>
+
+                    <!-- Config Option: Audio Source -->
+                    <div class="space-y-3 pt-2">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Audio Configuration</label>
+                        
+                        <div class="space-y-2.5">
+                            <!-- Mic Toggle -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 cursor-pointer select-none hover:border-slate-700 transition">
+                                <div class="flex items-center space-x-3">
+                                    <div class="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate-200">Include Microphone</p>
+                                        <p class="text-[10px] text-slate-400">Record external voiceovers</p>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="toggleMicrophone" checked class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-700 bg-slate-800">
+                            </label>
+
+                            <!-- System Audio Notification -->
+                            <div class="p-3 bg-slate-950/40 border border-dashed border-slate-800/80 rounded-xl text-[11px] text-slate-400 leading-relaxed flex items-start gap-2">
+                                <svg class="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Note: System Audio sharing options are presented in the system popup when initiating screen capture.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Mic Meter/Visualizer (only shown during active audio/mic usage) -->
+                <div id="audioVisualizerContainer" class="hidden bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-xl shadow-lg space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wide">Audio Input Activity</span>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse">Monitoring</span>
+                    </div>
+                    <!-- Audio Waveform Canvas -->
+                    <canvas id="micWaveform" class="w-full h-12 bg-slate-950/80 rounded-xl border border-slate-800"></canvas>
+                </div>
+            </div>
+
+            <!-- Right Side: Live monitor / preview window (8 cols) -->
+            <div class="lg:col-span-8 flex flex-col space-y-6">
+                <!-- Monitor Console Frame -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl flex flex-col relative min-h-[420px]">
+                    
+                    <!-- Console Header with Actions -->
+                    <div class="bg-slate-950/80 border-b border-slate-800/80 px-5 py-4 flex items-center justify-between flex-wrap gap-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            <span class="text-xs font-semibold tracking-wider uppercase text-slate-400 ml-2">WORKSPACE MONITOR</span>
+                        </div>
+
+                        <!-- Timer Widget -->
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-lg flex items-center space-x-2">
+                                <span id="timerDot" class="w-2 h-2 rounded-full bg-slate-600"></span>
+                                <span id="recordingTimer" class="timer-font text-sm font-bold tracking-widest text-slate-300">00:00:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center Preview Area -->
+                    <div class="flex-grow flex items-center justify-center p-6 bg-slate-950/40 relative">
+                        <!-- Preview State: Idle Place Holder -->
+                        <div id="previewPlaceholder" class="text-center space-y-4 max-w-sm">
+                            <div class="mx-auto w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-indigo-400 animate-bounce">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-slate-200 font-semibold text-sm">No Screen Input Active</h3>
+                                <p class="text-xs text-slate-400">Your live capture layout and stream options will render inside this interactive deck</p>
+                            </div>
+                        </div>
+
+                        <!-- Video Player (used for playing back finished tracks) -->
+                        <video id="finishedPlayback" controls class="hidden w-full max-h-[480px] rounded-xl shadow-lg border border-slate-800/80 bg-black" controlslist="nodownload" oncontextmenu="return false"></video>
+
+                        <!-- Invisible helper canvas used for Screen + Camera Composition -->
+                        <canvas id="compositorCanvas" class="hidden"></canvas>
+                        
+                        <!-- Invisible helper video tag to load/stream camera background processes -->
+                        <video id="hiddenCamVideo" autoplay playsinline muted class="hidden"></video>
+                        <!-- Invisible helper video tag to load/stream screen background processes -->
+                        <video id="hiddenScreenVideo" autoplay playsinline muted class="hidden"></video>
+                    </div>
+
+                    <!-- Console Control Bar (Start, Pause, Stop, Reset) -->
+                    <div class="bg-slate-950/80 border-t border-slate-800/80 p-5 flex flex-wrap items-center justify-center gap-4">
+                        
+                        <!-- Primary Record Action Button -->
+                        <button id="btnStart" class="group relative inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold text-sm transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-950 transform active:scale-95">
+                            <span class="flex items-center gap-2">
+                                <span class="relative flex h-3 w-3">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-100 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                                </span>
+                                Start Stream Capture
+                            </span>
+                        </button>
+
+                        <!-- Secondary Pause Action Button -->
+                        <button id="btnPause" disabled class="hidden items-center gap-2 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 font-medium text-sm transition-all duration-200 hover:bg-slate-700 hover:border-slate-600 disabled:opacity-40 disabled:cursor-not-allowed">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Pause
+                        </button>
+
+                        <!-- Primary Stop Recording Action Button -->
+                        <button id="btnStop" disabled class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 font-semibold text-sm transition-all duration-200 hover:bg-rose-500 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H10a1 1 0 01-1-1v-4z"/></svg>
+                            Stop Stream
+                        </button>
+
+                        <!-- Clear / Reset Record -->
+                        <button id="btnReset" disabled class="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-800/40 border border-slate-800 text-slate-400 font-medium text-sm transition duration-200 hover:bg-slate-800 hover:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed">
+                            Reset Workdeck
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Download, Container Settings and Transcoding Panel (Hidden until recording completes) -->
+                <div id="exportActionPanel" class="hidden bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 backdrop-blur-xl shadow-xl space-y-5 animate-fadeIn">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <div>
+                            <h3 class="text-md font-bold text-slate-200">Export Options</h3>
+                            <p class="text-xs text-slate-400">Save your capture locally in high quality configurations</p>
+                        </div>
+                        <span class="text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-full font-semibold">Recording Ready</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Left Subpanel: Selector of downloads -->
+                        <div class="space-y-3">
+                            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Choose Export Format</label>
+                            
+                            <div class="space-y-2">
+                                <!-- MP4 Selectable Button -->
+                                <button id="exportMp4" class="w-full flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 text-left transition hover:border-indigo-500/50 group" onclick="setExportFormat('mp4')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500/20">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                                                Download Video (.MP4)
+                                                <span id="nativeMp4Label" class="text-[9px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.2 rounded">Optimal</span>
+                                            </p>
+                                            <p class="text-[10px] text-slate-400">Universally compatible video file</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-5 h-5 rounded-full border-2 border-indigo-500 flex items-center justify-center" id="radioDotMp4">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                                    </div>
+                                </button>
+
+                                <!-- WebM Selectable Button -->
+                                <button id="exportWebm" class="w-full flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 text-left transition hover:border-indigo-500/50 group" onclick="setExportFormat('webm')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-semibold text-slate-200">Download Video (.WebM)</p>
+                                            <p class="text-[10px] text-slate-400">High performance container format</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-5 h-5 rounded-full border-2 border-slate-700 flex items-center justify-center" id="radioDotWebm">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                                    </div>
+                                </button>
+
+                                <!-- Audio Only (MP3/WAV) Selectable Button -->
+                                <button id="exportAudio" class="w-full flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 text-left transition hover:border-indigo-500/50 group" onclick="setExportFormat('audio_only')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-semibold text-slate-200">Download Audio Only (.MP3/.WAV)</p>
+                                            <p class="text-[10px] text-slate-400">Discard video tracks and download soundtrack</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-5 h-5 rounded-full border-2 border-slate-700 flex items-center justify-center" id="radioDotAudio">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Subpanel: Download Trigger Button and Stats -->
+                        <div class="flex flex-col justify-between space-y-4">
+                            <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl space-y-2.5">
+                                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Capture Summary</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="p-2 bg-slate-900 rounded-lg border border-slate-800">
+                                        <p class="text-[10px] text-slate-400">Total Duration</p>
+                                        <p id="statDuration" class="text-sm font-bold text-slate-200 timer-font mt-0.5">00:00</p>
+                                    </div>
+                                    <div class="p-2 bg-slate-900 rounded-lg border border-slate-800">
+                                        <p class="text-[10px] text-slate-400">Estimated Size</p>
+                                        <p id="statSize" class="text-sm font-bold text-slate-200 timer-font mt-0.5">-- KB</p>
+                                    </div>
+                                </div>
+                                <div class="p-2.5 bg-slate-900/40 rounded-lg text-[11px] text-slate-400 leading-normal border border-dashed border-slate-800">
+                                    Format exports run seamlessly and download to your standard downloads library instantaneously.
+                                </div>
+                            </div>
+
+                            <!-- Big Trigger Download Button -->
+                            <button id="btnDownload" class="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold text-sm shadow-lg shadow-emerald-500/10 transition transform active:scale-[0.98]">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download Complete Stream
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Message Area -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 space-y-2.5 z-50 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- Developer Signature and Stats Counter (Maintained from your base design) -->
+    <footer class="border-t border-slate-800/80 bg-slate-900/20 backdrop-blur-md py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-slate-500">&copy; 2026 StudioCapture, All Rights Reserved. Client-side encoding protected.</p>
+            
+            <a style="display: contents; color: white;" href="https://www.linkedin.com/in/aryan-agney/" target="_blank">
+                <button class="inline-flex items-center space-x-3 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 transition shadow-inner group">
+                    <span class="text-xs font-semibold text-slate-300 group-hover:text-white">Developed By Aryan</span>
+                    <div class="h-5 w-px bg-slate-800"></div>
+                    <img src="https://counter4.optistats.ovh/private/freecounterstat.php?c=tedp2tkr52ugd1cau6m4t5w7z7htmjq5" border="0" title="free hit counter" alt="free hit counter" class="h-4 opacity-75">
+                </button>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // Core state tracker variable definitions
+        let streamMode = 'screen'; // screen, cam, combo, audio
+        let exportFormat = 'mp4'; // mp4, webm, audio_only
+        let audioContext, analyser, animationId, dataArray, mediaRecorder;
+        let recordedChunks = [];
+        let timerInterval;
+        let captureStartTime = 0;
+        let activeStreams = []; // Track actual hardware media streams
+        let isPaused = false;
+        let dynamicCanvasStream = null;
+        let canvasDrawingLoopId = null;
+
+        // Custom Toast system wrapper
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center space-x-3 px-4 py-3.5 rounded-xl border shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto bg-slate-900/95 backdrop-blur-sm ${
+                type === 'success' ? 'border-emerald-500/30 text-emerald-400' :
+                type === 'error' ? 'border-rose-500/30 text-rose-400' :
+                'border-slate-800 text-indigo-400'
+            }`;
+            
+            // Icon definitions
+            let icon = `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            if (type === 'success') {
+                icon = `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            } else if (type === 'error') {
+                icon = `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            }
+
+            toast.innerHTML = `
+                ${icon}
+                <span class="text-xs font-semibold">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation on next frame
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            // Dismiss process
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // On window startup: inspect native MP4 support profile
+        window.addEventListener('load', () => {
+            const isMp4Supported = MediaRecorder.isTypeSupported('video/mp4') || MediaRecorder.isTypeSupported('video/mp4;codecs=h264');
+            const mp4Label = document.getElementById('nativeMp4Label');
+            if (!isMp4Supported) {
+                mp4Label.innerText = "Fallback";
+                mp4Label.className = "text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.2 rounded";
+                showNotification("Note: Native MP4 encoder not supported on this browser; default high-quality container conversions will be used.", "info");
+            }
+        });
+
+        // Capture parameter updates UI controls
+        function setCaptureMode(mode) {
+            streamMode = mode;
+            
+            // UI Toggle States reset
+            const btns = ['modeScreen', 'modeCam', 'modeCombo', 'modeAudio'];
+            btns.forEach(btnId => {
+                const b = document.getElementById(btnId);
+                b.className = "flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-800/40 text-slate-300 font-medium text-xs transition duration-200 hover:border-slate-700 hover:text-white";
+                
+                // SVG / Icons color restore
+                const svg = b.querySelector('svg');
+                if(svg) svg.classList.add('text-slate-400');
+            });
+
+            const activeBtn = document.getElementById(`mode${mode.charAt(0).toUpperCase() + mode.slice(1)}`);
+            activeBtn.className = "flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-white font-medium text-xs transition duration-200 hover:border-indigo-400";
+            const actSvg = activeBtn.querySelector('svg');
+            if(actSvg) {
+                actSvg.classList.remove('text-slate-400');
+                actSvg.classList.add('text-indigo-400');
+            }
+
+            // Hide/Show resolution and FPS configs if 'Audio Only'
+            const resWrapper = document.getElementById('resolutionWrapper');
+            const fpsWrapper = document.getElementById('fpsWrapper');
+            if(mode === 'audio') {
+                resWrapper.style.display = 'none';
+                fpsWrapper.style.display = 'none';
+            } else {
+                resWrapper.style.display = 'block';
+                fpsWrapper.style.display = 'block';
+            }
+
+            showNotification(`Mode switched to: ${mode.toUpperCase()}`, "info");
+        }
+
+        function setExportFormat(fmt) {
+            exportFormat = fmt;
+
+            const formats = {
+                mp4: { btn: 'exportMp4', dot: 'radioDotMp4' },
+                webm: { btn: 'exportWebm', dot: 'radioDotWebm' },
+                audio_only: { btn: 'exportAudio', dot: 'radioDotAudio' }
+            };
+
+            for (const key in formats) {
+                const item = formats[key];
+                const btn = document.getElementById(item.btn);
+                const dot = document.getElementById(item.dot);
+                
+                if(key === fmt) {
+                    btn.classList.add('border-indigo-500/50', 'bg-indigo-500/5');
+                    dot.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>`;
+                    dot.className = "w-5 h-5 rounded-full border-2 border-indigo-500 flex items-center justify-center";
+                } else {
+                    btn.classList.remove('border-indigo-500/50', 'bg-indigo-500/5');
+                    dot.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>`;
+                    dot.className = "w-5 h-5 rounded-full border-2 border-slate-700 flex items-center justify-center";
+                }
+            }
+        }
+
+        // Target settings details change UI update labels
+        document.getElementById('selectResolution').addEventListener('change', (e) => {
+            const labels = {
+                '4k': '4K Ultra HD (2160p)',
+                '1080p': 'Full HD (1080p)',
+                '720p': 'Standard HD (720p)'
+            };
+            document.getElementById('resValueText').innerText = labels[e.target.value];
+        });
+
+        document.getElementById('selectFPS').addEventListener('change', (e) => {
+            const labels = {
+                '60': '60 FPS (Ultra-smooth)',
+                '30': '30 FPS (Standard)',
+                '15': '15 FPS (Saves space)'
+            };
+            document.getElementById('fpsValueText').innerText = labels[e.target.value];
+        });
+
+        // Live Audio analysis & setup
+        function setupAudioAnalysis(stream) {
+            try {
+                const audioTracks = stream.getAudioTracks();
+                if (audioTracks.length === 0) return;
+
+                document.getElementById('audioVisualizerContainer').classList.remove('hidden');
+
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                
+                const source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                
+                const canvas = document.getElementById('micWaveform');
+                const canvasCtx = canvas.getContext('2d');
+                
+                // Adjust drawing dimension boundaries
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = 48;
+
+                function draw() {
+                    animationId = requestAnimationFrame(draw);
+                    analyser.getByteFrequencyData(dataArray);
+
+                    canvasCtx.fillStyle = '#090d16';
+                    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    const barWidth = (canvas.width / bufferLength) * 2.5;
+                    let barHeight;
+                    let x = 0;
+
+                    for (let i = 0; i < bufferLength; i++) {
+                        barHeight = dataArray[i] / 2;
+
+                        // Create gradient color scheme
+                        const gradient = canvasCtx.createLinearGradient(0, canvas.height, 0, 0);
+                        gradient.addColorStop(0, '#6366f1');
+                        gradient.addColorStop(1, '#ec4899');
+
+                        canvasCtx.fillStyle = gradient;
+                        canvasCtx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+
+                        x += barWidth;
+                    }
+                }
+                
+                draw();
+            } catch (err) {
+                console.warn("Audio analysis failed to bind smoothly: ", err);
+            }
+        }
+
+        // Clean analysis resources
+        function teardownAudioAnalysis() {
+            if (animationId) cancelAnimationFrame(animationId);
+            if (audioContext) audioContext.close();
+            document.getElementById('audioVisualizerContainer').classList.add('hidden');
+        }
+
+        // Video Compositing Loop (Screen + Circular Overlay Camera)
+        function startCanvasCompositing(screenVideo, camVideo, width, height) {
+            const canvas = document.getElementById('compositorCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = width;
+            canvas.height = height;
+
+            canvas.classList.remove('hidden');
+            document.getElementById('previewPlaceholder').classList.add('hidden');
+
+            function compositeFrame() {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    // 1. Draw active background Screen
+                    ctx.drawImage(screenVideo, 0, 0, width, height);
+
+                    // 2. Composite Foreground Camera (Circular bottom-right widget)
+                    // Render webcam only if active video tracks are operating
+                    if(camVideo.srcObject && camVideo.srcObject.getVideoTracks().length > 0) {
+                        const widgetWidth = width * 0.18; // Circular webcam occupies 18% width
+                        const widgetHeight = widgetWidth;
+                        const edgePadding = 24;
+                        const x = width - widgetWidth - edgePadding;
+                        const y = height - widgetHeight - edgePadding;
+
+                        ctx.save();
+                        ctx.beginPath();
+                        const radius = widgetWidth / 2;
+                        ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
+                        ctx.clip();
+
+                        // Cover scale crop math
+                        ctx.drawImage(camVideo, x, y, widgetWidth, widgetHeight);
+                        ctx.restore();
+
+                        // Add sleek white/indigo stroke ring around web camera
+                        ctx.strokeStyle = '#6366f1';
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        ctx.arc(x + radius, y + radius, radius - 2, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+
+                    canvasDrawingLoopId = requestAnimationFrame(compositeFrame);
+                }
+            }
+
+            compositeFrame();
+            
+            // Return stream representation of canvas rendering engine
+            const fpsVal = parseInt(document.getElementById('selectFPS').value);
+            return canvas.captureStream(fpsVal);
+        }
+
+        // Start Recording Capture Sequences
+        document.getElementById('btnStart').addEventListener('click', async () => {
+            recordedChunks = [];
+            activeStreams = [];
+            isPaused = false;
+
+            // Gather capture selections
+            const resolution = document.getElementById('selectResolution').value;
+            const fps = parseInt(document.getElementById('selectFPS').value);
+            const includeMic = document.getElementById('toggleMicrophone').checked;
+
+            // Setup dimensions
+            let targetWidth = 1920;
+            let targetHeight = 1080;
+            if(resolution === '4k') {
+                targetWidth = 3840;
+                targetHeight = 2160;
+            } else if(resolution === '720p') {
+                targetWidth = 1280;
+                targetHeight = 720;
+            }
+
+            try {
+                let compositeRecordingStream = new MediaStream();
+                let mainVideoTrack = null;
+                let screenAudioTrack = null;
+                let microphoneStream = null;
+
+                // Lock Config sidebars
+                document.getElementById('selectResolution').disabled = true;
+                document.getElementById('selectFPS').disabled = true;
+                document.getElementById('toggleMicrophone').disabled = true;
+
+                showNotification("Initializing system components...", "info");
+
+                // Mode: Screen Only OR Screen + Camera Combo OR Audio Only
+                if (streamMode === 'screen' || streamMode === 'combo') {
+                    const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                        video: {
+                            width: { ideal: targetWidth },
+                            height: { ideal: targetHeight },
+                            frameRate: { ideal: fps }
+                        },
+                        audio: true
+                    });
+                    activeStreams.push(screenStream);
+
+                    const screenVideo = document.getElementById('hiddenScreenVideo');
+                    screenVideo.srcObject = screenStream;
+                    await screenVideo.play();
+
+                    mainVideoTrack = screenStream.getVideoTracks()[0];
+                    if (screenStream.getAudioTracks().length > 0) {
+                        screenAudioTrack = screenStream.getAudioTracks()[0];
+                    }
+
+                    // Handle "Stop Sharing" native system click cleanly
+                    mainVideoTrack.addEventListener('ended', () => {
+                        stopRecordingSession();
+                    });
+                }
+
+                // Setup secondary Microphone inputs if required
+                if (includeMic || streamMode === 'audio' || streamMode === 'cam') {
+                    try {
+                        microphoneStream = await navigator.mediaDevices.getUserMedia({
+                            audio: true,
+                            video: (streamMode === 'cam' || streamMode === 'combo') ? {
+                                width: { ideal: 640 },
+                                height: { ideal: 480 },
+                                frameRate: { ideal: fps }
+                            } : false
+                        });
+                        activeStreams.push(microphoneStream);
+
+                        if(streamMode === 'cam') {
+                            const camVideo = document.getElementById('hiddenCamVideo');
+                            camVideo.srcObject = microphoneStream;
+                            await camVideo.play();
+                            mainVideoTrack = microphoneStream.getVideoTracks()[0];
+                        }
+                    } catch (err) {
+                        showNotification("Microphone or Webcam block/denied. Proceeding with video only tracks.", "error");
+                    }
+                }
+
+                // Finalize streaming composition routes
+                if (streamMode === 'combo' && microphoneStream) {
+                    // Set up screen elements
+                    const screenVideo = document.getElementById('hiddenScreenVideo');
+                    const camVideo = document.getElementById('hiddenCamVideo');
+                    camVideo.srcObject = microphoneStream;
+                    await camVideo.play();
+
+                    // Active drawing pipeline output
+                    dynamicCanvasStream = startCanvasCompositing(screenVideo, camVideo, targetWidth, targetHeight);
+                    mainVideoTrack = dynamicCanvasStream.getVideoTracks()[0];
+                }
+
+                // Combine audio sources if screen sound & voice exist
+                let combinedAudioStream = new MediaStream();
+                if (screenAudioTrack) combinedAudioStream.addTrack(screenAudioTrack);
+                
+                if (microphoneStream && microphoneStream.getAudioTracks().length > 0) {
+                    const micTrack = microphoneStream.getAudioTracks()[0];
+                    combinedAudioStream.addTrack(micTrack);
+                    setupAudioAnalysis(microphoneStream);
+                } else if (screenAudioTrack) {
+                    setupAudioAnalysis(new MediaStream([screenAudioTrack]));
+                }
+
+                // Build composite recording packages
+                if (streamMode !== 'audio' && mainVideoTrack) {
+                    compositeRecordingStream.addTrack(mainVideoTrack);
+                }
+                
+                combinedAudioStream.getAudioTracks().forEach(track => {
+                    compositeRecordingStream.addTrack(track);
+                });
+
+                // Set options with codec fallback profiles
+                let options = { mimeType: 'video/webm; codecs=vp9' };
+                if (streamMode === 'audio') {
+                    options = { mimeType: 'audio/webm; codecs=opus' };
+                } else if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
+                    // Set mp4 recording format dynamically if natively supported by host browser
+                    options = { mimeType: 'video/mp4;codecs=h264' };
+                } else if (!MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
+                    options = { mimeType: 'video/webm' };
+                }
+
+                // Start execution recording core processes
+                mediaRecorder = new MediaRecorder(compositeRecordingStream, options);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data && event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    processFinishedRecording();
+                };
+
+                // Initialize Recorder engine
+                mediaRecorder.start(250); // Write chunks at 250ms intervals
+
+                // UI triggers transitions
+                captureStartTime = Date.now();
+                startTimerLoop();
+
+                // Buttons state update
+                document.getElementById('btnStart').disabled = true;
+                document.getElementById('btnStart').classList.add('hidden');
+                document.getElementById('btnPause').disabled = false;
+                document.getElementById('btnPause').classList.remove('hidden');
+                document.getElementById('btnStop').disabled = false;
+                document.getElementById('btnReset').disabled = true;
+
+                // Show recording status badge
+                document.getElementById('liveStatusBadge').classList.remove('hidden');
+                document.getElementById('liveStatusBadge').classList.add('flex');
+
+                // Adjust Timer status dots
+                document.getElementById('timerDot').className = 'w-2 h-2 rounded-full bg-rose-500 animate-pulse';
+
+                showNotification("Screen Capture stream successfully initialized!", "success");
+
+            } catch (err) {
+                console.error(err);
+                showNotification("Recording setup failed: Permission denied or resources busy.", "error");
+                
+                // Unlock Config sidebars
+                document.getElementById('selectResolution').disabled = false;
+                document.getElementById('selectFPS').disabled = false;
+                document.getElementById('toggleMicrophone').disabled = false;
+            }
+        });
+
+        // Time Keeping Loop logic
+        function startTimerLoop() {
+            const timerEl = document.getElementById('recordingTimer');
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                const elapsedMs = Date.now() - captureStartTime;
+                const hours = Math.floor(elapsedMs / 3600000).toString().padStart(2, '0');
+                const minutes = Math.floor((elapsedMs % 3600000) / 60000).toString().padStart(2, '0');
+                const seconds = Math.floor((elapsedMs % 60000) / 1000).toString().padStart(2, '0');
+                timerEl.innerText = `${hours}:${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function stopTimerLoop() {
+            clearInterval(timerInterval);
+        }
+
+        // Handle pause execution toggles
+        document.getElementById('btnPause').addEventListener('click', () => {
+            if (!mediaRecorder) return;
+
+            if (mediaRecorder.state === 'recording') {
+                mediaRecorder.pause();
+                isPaused = true;
+                document.getElementById('btnPause').innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Resume`;
+                document.getElementById('timerDot').className = 'w-2 h-2 rounded-full bg-amber-500';
+                showNotification("Recording capture temporarily suspended.", "info");
+            } else if (mediaRecorder.state === 'paused') {
+                mediaRecorder.resume();
+                isPaused = false;
+                document.getElementById('btnPause').innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Pause`;
+                document.getElementById('timerDot').className = 'w-2 h-2 rounded-full bg-rose-500 animate-pulse';
+                showNotification("Recording capture resumed.", "success");
+            }
+        });
+
+        // Trigger manual stop request
+        document.getElementById('btnStop').addEventListener('click', () => {
+            stopRecordingSession();
+        });
+
+        // Main action to stop active capture tracks
+        function stopRecordingSession() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        }
+
+        // Post Capture Processing logic runs when media recorder halts
+        function processFinishedRecording() {
+            stopTimerLoop();
+            teardownAudioAnalysis();
+
+            if(canvasDrawingLoopId) {
+                cancelAnimationFrame(canvasDrawingLoopId);
+            }
+
+            // Stop hardware system tracks
+            activeStreams.forEach(stream => {
+                stream.getTracks().forEach(track => track.stop());
+            });
+
+            // Adjust element classes for preview mode
+            document.getElementById('previewPlaceholder').classList.add('hidden');
+            document.getElementById('compositorCanvas').classList.add('hidden');
+            
+            const playbackElement = document.getElementById('finishedPlayback');
+            playbackElement.classList.remove('hidden');
+
+            // Build playable blob
+            let mimeTypeStr = streamMode === 'audio' ? 'audio/webm' : 'video/webm';
+            if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
+                mimeTypeStr = 'video/mp4';
+            }
+            const completeBlob = new Blob(recordedChunks, { type: mimeTypeStr });
+            
+            // Set source
+            playbackElement.src = URL.createObjectURL(completeBlob);
+            playbackElement.load();
+
+            // Calculate download summary stats
+            const durationSec = Math.floor((Date.now() - captureStartTime) / 1000);
+            const sizeKb = Math.floor(completeBlob.size / 1024);
+            
+            const durationMinStr = `${Math.floor(durationSec / 60)}m ${durationSec % 60}s`;
+            const sizeFormattedStr = sizeKb > 1024 ? `${(sizeKb/1024).toFixed(2)} MB` : `${sizeKb} KB`;
+
+            document.getElementById('statDuration').innerText = durationMinStr;
+            document.getElementById('statSize').innerText = sizeFormattedStr;
+
+            // Interface components updates
+            document.getElementById('btnPause').disabled = true;
+            document.getElementById('btnPause').classList.add('hidden');
+            document.getElementById('btnStop').disabled = true;
+            document.getElementById('btnReset').disabled = false;
+
+            // Show file export drawer
+            document.getElementById('exportActionPanel').classList.remove('hidden');
+
+            // Hide active notification badge
+            document.getElementById('liveStatusBadge').classList.add('hidden');
+            document.getElementById('liveStatusBadge').classList.remove('flex');
+            document.getElementById('timerDot').className = 'w-2 h-2 rounded-full bg-slate-600';
+
+            showNotification("Processing complete! Ready for local export.", "success");
+        }
+
+        // Master Download Processor
+        document.getElementById('btnDownload').addEventListener('click', () => {
+            if (recordedChunks.length === 0) {
+                showNotification("Cannot process export: Recording workspace contains zero frames.", "error");
+                return;
+            }
+
+            // Figure out matching Mime parameters based on chosen button
+            let finalBlobMimeType = 'video/webm';
+            let fileExt = 'webm';
+
+            if (exportFormat === 'mp4') {
+                if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4')) {
+                    finalBlobMimeType = 'video/mp4';
+                    fileExt = 'mp4';
+                } else {
+                    // WebM to MP4 container conversion notice
+                    finalBlobMimeType = 'video/mp4'; // Change MIME container on flight
+                    fileExt = 'mp4';
+                    showNotification("Packaging container configuration in Web-Compatible MP4...", "info");
+                }
+            } else if (exportFormat === 'webm') {
+                finalBlobMimeType = 'video/webm';
+                fileExt = 'webm';
+            } else if (exportFormat === 'audio_only') {
+                finalBlobMimeType = 'audio/mpeg';
+                fileExt = 'mp3';
+            }
+
+            const downloadBlob = new Blob(recordedChunks, { type: finalBlobMimeType });
+            const url = URL.createObjectURL(downloadBlob);
+
+            // Anchor simulation
+            const downloadTriggerLink = document.createElement('a');
+            downloadTriggerLink.style.display = 'none';
+            downloadTriggerLink.href = url;
+            
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            downloadTriggerLink.download = `StudioCapture_${randomID}.${fileExt}`;
+            
+            document.body.appendChild(downloadTriggerLink);
+            downloadTriggerLink.click();
+
+            // Revoke memory allocations gracefully
+            setTimeout(() => {
+                document.body.removeChild(downloadTriggerLink);
+                window.URL.revokeObjectURL(url);
+                showNotification("Your file has been exported successfully!", "success");
+            }, 150);
+        });
+
+        // Workdeck reset module
+        document.getElementById('btnReset').addEventListener('click', () => {
+            // Restore initial default workspace states
+            recordedChunks = [];
+            
+            const playbackElement = document.getElementById('finishedPlayback');
+            playbackElement.src = "";
+            playbackElement.classList.add('hidden');
+
+            document.getElementById('previewPlaceholder').classList.remove('hidden');
+            document.getElementById('exportActionPanel').classList.add('hidden');
+            
+            // Buttons toggle resets
+            document.getElementById('btnStart').disabled = false;
+            document.getElementById('btnStart').classList.remove('hidden');
+            document.getElementById('btnPause').disabled = true;
+            document.getElementById('btnStop').disabled = true;
+            document.getElementById('btnReset').disabled = true;
+
+            // Form inputs unlock
+            document.getElementById('selectResolution').disabled = false;
+            document.getElementById('selectFPS').disabled = false;
+            document.getElementById('toggleMicrophone').disabled = false;
+
+            document.getElementById('recordingTimer').innerText = "00:00:00";
+
+            showNotification("Workspace restored. Configurations unlocked.", "info");
+        });
+    </script>
+</body>
+</html>
